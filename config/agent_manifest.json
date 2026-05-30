@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "environment": "zcc_build",
+  "created": "2026-05-30",
+  "agents": [
+    {
+      "id": "orchestrator",
+      "tier": "orchestrator",
+      "entrypoint": "agents/orchestrator_agent.js",
+      "language": "javascript",
+      "capabilities": ["task_dispatch", "health_monitor", "kill_switch", "ipc_bus"],
+      "depends_on": [],
+      "health_check": "ipc/heartbeats/heartbeat_orchestrator.json",
+      "security": {
+        "requires_auth": false,
+        "allowed_callers": ["*"]
+      }
+    },
+    {
+      "id": "telemetry",
+      "tier": "orchestrator",
+      "entrypoint": "agents/telemetry_agent.py",
+      "language": "python",
+      "capabilities": ["hardware_monitoring", "cpu_stats", "vram_stats", "ram_stats"],
+      "depends_on": [],
+      "health_check": "ipc/heartbeats/heartbeat_telemetry.json",
+      "security": {
+        "requires_auth": false,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "build_agent",
+      "tier": "orchestrator",
+      "entrypoint": "agents/build_agent.py",
+      "language": "python",
+      "capabilities": ["file_watch", "auto_compile", "binary_checksum"],
+      "depends_on": [],
+      "health_check": "ipc/heartbeats/heartbeat_build_agent.json",
+      "security": {
+        "requires_auth": false,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "terminal",
+      "tier": "orchestrator",
+      "entrypoint": "agents/terminal_agent.py",
+      "language": "python",
+      "capabilities": ["cli_interface", "sync", "rebuild", "validate", "transpile", "status", "health"],
+      "depends_on": ["orchestrator"],
+      "health_check": null,
+      "security": {
+        "requires_auth": false,
+        "allowed_callers": ["user"]
+      }
+    },
+    {
+      "id": "mesh_processing",
+      "tier": "sub_agent",
+      "entrypoint": "sub_agents/mesh_processing_sub_agent.js",
+      "language": "javascript",
+      "capabilities": ["decimate_mesh", "smooth_mesh", "pipeline_chain"],
+      "depends_on": ["orchestrator"],
+      "health_check": "ipc/heartbeats/heartbeat_mesh_processing.json",
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "audio_reactive",
+      "tier": "sub_agent",
+      "entrypoint": "sub_agents/audio_reactive_sub_agent.js",
+      "language": "javascript",
+      "capabilities": ["fft_analysis", "reaction_param_mapping"],
+      "depends_on": ["orchestrator"],
+      "health_check": "ipc/heartbeats/heartbeat_audio_reactive.json",
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "blockchain_audit",
+      "tier": "sub_agent",
+      "entrypoint": "sub_agents/blockchain_audit_sub_agent.js",
+      "language": "javascript",
+      "capabilities": ["provenance_hash_audit", "offline_sha256_verify", "eth_call"],
+      "depends_on": ["orchestrator"],
+      "health_check": "ipc/heartbeats/heartbeat_blockchain_audit.json",
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "security_watchdog",
+      "tier": "sub_agent",
+      "entrypoint": "sub_agents/security_watchdog_sub_agent.py",
+      "language": "python",
+      "capabilities": ["file_integrity_monitor", "anomaly_detection", "lockdown"],
+      "depends_on": [],
+      "health_check": "ipc/heartbeats/heartbeat_security_watchdog.json",
+      "security": {
+        "requires_auth": false,
+        "allowed_callers": ["orchestrator"]
+      }
+    },
+    {
+      "id": "retopo",
+      "tier": "micro_agent",
+      "entrypoint": "micro_agents/retopo_micro_agent.js",
+      "language": "javascript",
+      "capabilities": ["quadric_edge_collapse"],
+      "depends_on": ["mesh_processing"],
+      "health_check": null,
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["mesh_processing", "orchestrator"]
+      }
+    },
+    {
+      "id": "rigging",
+      "tier": "micro_agent",
+      "entrypoint": "micro_agents/rigging_micro_agent.js",
+      "language": "javascript",
+      "capabilities": ["auto_bone_placement", "bbox_partition"],
+      "depends_on": ["mesh_processing"],
+      "health_check": null,
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["mesh_processing", "orchestrator"]
+      }
+    },
+    {
+      "id": "repair",
+      "tier": "micro_agent",
+      "entrypoint": "micro_agents/repair_micro_agent.js",
+      "language": "javascript",
+      "capabilities": ["hole_fill", "degenerate_triangle_removal"],
+      "depends_on": ["mesh_processing"],
+      "health_check": null,
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["mesh_processing", "orchestrator"]
+      }
+    },
+    {
+      "id": "anticlip",
+      "tier": "micro_agent",
+      "entrypoint": "micro_agents/anticlip_micro_agent.js",
+      "language": "javascript",
+      "capabilities": ["self_intersection_detection", "spatial_hash"],
+      "depends_on": ["mesh_processing"],
+      "health_check": null,
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["mesh_processing", "orchestrator"]
+      }
+    },
+    {
+      "id": "texture_bake",
+      "tier": "micro_agent",
+      "entrypoint": "micro_agents/texture_bake_micro_agent.js",
+      "language": "javascript",
+      "capabilities": ["uv_atlas_bake", "high_to_low_poly_transfer"],
+      "depends_on": ["mesh_processing"],
+      "health_check": null,
+      "security": {
+        "requires_auth": true,
+        "allowed_callers": ["mesh_processing", "orchestrator"]
+      }
+    }
+  ]
+}

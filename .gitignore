@@ -1,0 +1,11 @@
+# ZCC Build - Git Ignore
+config/auth.key
+assets/telemetry_state.json
+ipc/
+logs/
+*.o
+*.exe
+zkaedi_vmax_server
+__pycache__/
+*.pyc
+node_modules/
