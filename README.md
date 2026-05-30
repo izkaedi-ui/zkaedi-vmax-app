@@ -86,3 +86,7 @@ gcc src/zcc_server.c src/zcc_utils.c src/zcc_network.c \
 cl src/zcc_server.c src/zcc_utils.c src/zcc_network.c \
    src/zcc_router.c src/zcc_security.c /I src/ /Fe:zkaedi_vmax_server.exe ws2_32.lib
 ```
+
+# ZCC (self-hosting)
+ZCC_EMIT_IR=1 zcc src/zcc_server.c src/zcc_utils.c src/zcc_network.c \
+    src/zcc_router.c src/zcc_security.c -I src/ -lpthread -o zkaedi_vmax_server
