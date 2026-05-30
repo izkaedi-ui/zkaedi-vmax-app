@@ -9,3 +9,11 @@ zkaedi_vmax_server
 __pycache__/
 *.pyc
 node_modules/
+
+# Secrets & tokens
+.env
+.env.*
+config/*.token
+config/*.secret
+config/secrets.json
+*.pem
